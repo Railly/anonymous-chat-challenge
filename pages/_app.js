@@ -1,7 +1,7 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-  body {
+  body, h1, h2, h3, span, div {
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
@@ -11,11 +11,15 @@ const GlobalStyle = createGlobalStyle`
 
 const theme = {
   colors: {
-    primary: "#0070f3",
-    secondary: "#ff4081",
-    tertiary: "#a1887f",
-    black: "#333",
-    white: "#ddd",
+    primary: "#0080F4",
+    secondary: "#F4B000",
+    tertiary: "#C170F2",
+    borderPrimary: "#0080F4",
+    lightPrimary: "#D3EAFE",
+    black: "#022C52",
+    white: "#F1F8FF",
+    gray: "#7F8E9C",
+    transparent: "transparent",
   },
 };
 

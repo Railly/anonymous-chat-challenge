@@ -1,4 +1,4 @@
-export const getSpacing = ({ mb, mt, ml, mr, mx, my }) => {
+export const getMargin = ({ mb, mt, ml, mr, mx, my }) => {
   let stylesStringified = "";
   if (mx || my) {
     if (mx) {
@@ -11,13 +11,13 @@ export const getSpacing = ({ mb, mt, ml, mr, mx, my }) => {
         my / 4
       }rem; `;
     }
-    return stylesStringified;
   }
 
   if (mr) {
     stylesStringified += `margin-right: ${mr / 4}rem; `;
   }
   if (ml) {
+    console.log(ml, "margin-left");
     stylesStringified += `margin-left: ${ml / 4}rem; `;
   }
   if (mt) {
@@ -25,6 +25,37 @@ export const getSpacing = ({ mb, mt, ml, mr, mx, my }) => {
   }
   if (mb) {
     stylesStringified += `margin-bottom: ${mb / 4}rem; `;
+  }
+
+  return stylesStringified;
+};
+
+export const getPadding = ({ pb, pt, pl, pr, px, py }) => {
+  let stylesStringified = "";
+  if (px || py) {
+    if (px) {
+      stylesStringified += `padding-left: ${px / 4}rem; padding-right: ${
+        px / 4
+      }rem; `;
+    }
+    if (py) {
+      stylesStringified += `padding-top: ${py / 4}rem; padding-bottom: ${
+        py / 4
+      }rem; `;
+    }
+  }
+
+  if (pr) {
+    stylesStringified += `padding-right: ${pr / 4}rem; `;
+  }
+  if (pl) {
+    stylesStringified += `padding-left: ${pl / 4}rem; `;
+  }
+  if (pt) {
+    stylesStringified += `padding-top: ${pt / 4}rem; `;
+  }
+  if (pb) {
+    stylesStringified += `padding-bottom: ${pb / 4}rem; `;
   }
 
   return stylesStringified;

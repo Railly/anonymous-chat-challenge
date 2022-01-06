@@ -3,14 +3,16 @@ import { getFlexStyles } from "utils/flex";
 import { getFontSize } from "utils/fontSize";
 import { getFontWeight } from "utils/fontWeight";
 import { getHeightStyles } from "utils/height";
-import { getSpacing } from "utils/spacing";
+import { getMargin, getPadding } from "utils/spacing";
 import { getWidthStyles } from "utils/width";
 
 const Div = styled.div`
-  background-color: ${({ theme, bgColor = "white" }) => theme.colors[bgColor]};
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
   color: ${({ theme, color = "black" }) => theme.colors[color]};
   ${(p) => getFlexStyles(p)}
-  ${(p) => getSpacing(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
   ${(p) => getWidthStyles(p)}
   ${(p) => getHeightStyles(p)}
   ${(p) => getFontSize(p)}
@@ -18,10 +20,12 @@ const Div = styled.div`
 `;
 
 const Span = styled.span`
-  background-color: ${({ theme, bgColor = "white" }) => theme.colors[bgColor]};
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
   color: ${({ theme, color = "black" }) => theme.colors[color]};
   ${(p) => getFlexStyles(p)}
-  ${(p) => getSpacing(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
   ${(p) => getWidthStyles(p)}
   ${(p) => getHeightStyles(p)}
   ${(p) => getFontSize(p)}
@@ -29,10 +33,13 @@ const Span = styled.span`
 `;
 
 const H1 = styled.h1`
-  background-color: ${({ theme, bgColor = "white" }) => theme.colors[bgColor]};
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
   color: ${({ theme, color = "black" }) => theme.colors[color]};
+  border-radius: 5px;
   ${(p) => getFlexStyles(p)}
-  ${(p) => getSpacing(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
   ${(p) => getWidthStyles(p)}
   ${(p) => getHeightStyles(p)}
   ${(p) => getFontSize(p)}
@@ -40,10 +47,13 @@ const H1 = styled.h1`
 `;
 
 const H2 = styled.h2`
-  background-color: ${({ theme, bgColor = "white" }) => theme.colors[bgColor]};
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
   color: ${({ theme, color = "black" }) => theme.colors[color]};
+  border-radius: 5px;
   ${(p) => getFlexStyles(p)}
-  ${(p) => getSpacing(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
   ${(p) => getWidthStyles(p)}
   ${(p) => getHeightStyles(p)}
   ${(p) => getFontSize(p)}
@@ -51,10 +61,13 @@ const H2 = styled.h2`
 `;
 
 const H3 = styled.h3`
-  background-color: ${({ theme, bgColor = "white" }) => theme.colors[bgColor]};
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
   color: ${({ theme, color = "black" }) => theme.colors[color]};
+  border-radius: 5px;
   ${(p) => getFlexStyles(p)}
-  ${(p) => getSpacing(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
   ${(p) => getWidthStyles(p)}
   ${(p) => getHeightStyles(p)}
   ${(p) => getFontSize(p)}
