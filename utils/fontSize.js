@@ -7,12 +7,13 @@ export const getFontSize = ({ text }) => {
     xs: 3,
     sm: 3.5,
     base: 4,
-    lg: 5,
-    xl: 6,
-    "2xl": 7,
-    "3xl": 8,
-    "4xl": 9,
-    "5xl": 10,
+    md: 5,
+    lg: 6,
+    xl: 7,
+    "2xl": 8,
+    "3xl": 9,
+    "4xl": 10,
+    "5xl": 11,
   };
 
   if (text) {

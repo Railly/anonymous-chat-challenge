@@ -9,7 +9,20 @@ import { getWidthStyles } from "utils/width";
 const Div = styled.div`
   background-color: ${({ theme, bgColor = "transparent" }) =>
     theme.colors[bgColor]};
-  color: ${({ theme, color = "black" }) => theme.colors[color]};
+  color: ${({ theme, color }) => theme.colors[color]};
+  ${(p) => getFlexStyles(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
+  ${(p) => getWidthStyles(p)}
+  ${(p) => getHeightStyles(p)}
+  ${(p) => getFontSize(p)}
+  ${(p) => getFontWeight(p)}
+`;
+
+const Section = styled.section`
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
+  color: ${({ theme, color }) => theme.colors[color]};
   ${(p) => getFlexStyles(p)}
   ${(p) => getMargin(p)}
   ${(p) => getPadding(p)}
@@ -22,7 +35,7 @@ const Div = styled.div`
 const Span = styled.span`
   background-color: ${({ theme, bgColor = "transparent" }) =>
     theme.colors[bgColor]};
-  color: ${({ theme, color = "black" }) => theme.colors[color]};
+  color: ${({ theme, color }) => theme.colors[color]};
   ${(p) => getFlexStyles(p)}
   ${(p) => getMargin(p)}
   ${(p) => getPadding(p)}
@@ -35,7 +48,7 @@ const Span = styled.span`
 const H1 = styled.h1`
   background-color: ${({ theme, bgColor = "transparent" }) =>
     theme.colors[bgColor]};
-  color: ${({ theme, color = "black" }) => theme.colors[color]};
+  color: ${({ theme, color }) => theme.colors[color]};
   border-radius: 5px;
   ${(p) => getFlexStyles(p)}
   ${(p) => getMargin(p)}
@@ -49,7 +62,7 @@ const H1 = styled.h1`
 const H2 = styled.h2`
   background-color: ${({ theme, bgColor = "transparent" }) =>
     theme.colors[bgColor]};
-  color: ${({ theme, color = "black" }) => theme.colors[color]};
+  color: ${({ theme, color }) => theme.colors[color]};
   border-radius: 5px;
   ${(p) => getFlexStyles(p)}
   ${(p) => getMargin(p)}
@@ -63,7 +76,7 @@ const H2 = styled.h2`
 const H3 = styled.h3`
   background-color: ${({ theme, bgColor = "transparent" }) =>
     theme.colors[bgColor]};
-  color: ${({ theme, color = "black" }) => theme.colors[color]};
+  color: ${({ theme, color }) => theme.colors[color]};
   border-radius: 5px;
   ${(p) => getFlexStyles(p)}
   ${(p) => getMargin(p)}
@@ -76,6 +89,7 @@ const H3 = styled.h3`
 
 export default {
   Div,
+  Section,
   Span,
   Heading: { H1, H2, H3 },
 };

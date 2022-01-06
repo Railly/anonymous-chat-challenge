@@ -17,7 +17,6 @@ export const getMargin = ({ mb, mt, ml, mr, mx, my }) => {
     stylesStringified += `margin-right: ${mr / 4}rem; `;
   }
   if (ml) {
-    console.log(ml, "margin-left");
     stylesStringified += `margin-left: ${ml / 4}rem; `;
   }
   if (mt) {
