@@ -6,21 +6,36 @@ import { PersistenceContext } from "./PersistenceProvider";
 export const ChatContext = createContext();
 
 export default function ChatContextProvider({ children }) {
-  const [currentChatId, setCurrentChatId] = useState("");
+  const [currentGroupChatId, setCurrentGroupChatId] = useState("");
+  const [currentPrivateChatId, setCurrentPrivateChatId] = useState("");
+
   const { currentUser } = useContext(UserContext);
   const { idb } = useContext(PersistenceContext);
-  const categories = useLiveQuery(() => idb.categories.toArray());
-  const chats = useLiveQuery(() => idb.chats.toArray());
-  const messages = useLiveQuery(() => idb.messages.toArray());
+
+  const categories = useLiveQuery(() => {
+    if (currentUser) {
+      return idb.categories.toArray();
+    }
+  }, [currentUser]);
+
+  const messages = useLiveQuery(() => {
+    if (currentUser) {
+      return idb.messages
+        .where("userId")
+        .equals(+currentUser?.id)
+        .toArray();
+    }
+  }, [currentUser]);
 
   return (
     <ChatContext.Provider
       value={{
         categories,
-        chats,
         messages,
-        currentChatId,
-        setCurrentChatId,
+        currentGroupChatId,
+        currentPrivateChatId,
+        setCurrentGroupChatId,
+        setCurrentPrivateChatId,
       }}
     >
       {children}

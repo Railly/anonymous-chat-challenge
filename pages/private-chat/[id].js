@@ -34,14 +34,14 @@ const CustomDiv = styled.div`
   }
 `;
 
-export default function ChatID() {
+export default function PrivateChatID() {
   const router = useRouter();
   const { id } = router.query;
   const { idb } = useContext(PersistenceContext);
 
   const chat = useLiveQuery(() => {
     if (id) {
-      return idb.chats
+      return idb.directChats
         .where("id")
         .equals(+id)
         .first();
@@ -53,6 +53,7 @@ export default function ChatID() {
       return idb.messages
         .where("chatId")
         .equals(+id)
+        .and((item) => item.type === "private")
         .toArray();
     }
   }, [id]);

@@ -70,7 +70,7 @@ export default function ChatCategory({ name, id }) {
   const { idb } = useContext(PersistenceContext);
 
   const chats = useLiveQuery(() =>
-    idb.chats.where("categoryId").equals(id).toArray()
+    idb.groupChats.where("categoryId").equals(id).toArray()
   );
 
   return (
@@ -101,15 +101,16 @@ export default function ChatCategory({ name, id }) {
 
 const ChatItem = ({ chat }) => {
   const router = useRouter();
-  const { currentChatId, setCurrentChatId } = useContext(ChatContext);
+  const { currentGroupChatId, setCurrentGroupChatId } = useContext(ChatContext);
+  console.log(chat, "chat");
 
   return (
     <CustomSpan
       onClick={() => {
-        setCurrentChatId(chat.id);
-        router.push(`/chat/${chat.id}`);
+        setCurrentGroupChatId(chat.id);
+        router.push(`/${chat.type}-chat/${chat.id}`);
       }}
-      isActive={currentChatId === +chat.id}
+      isActive={currentGroupChatId === +chat.id}
       px={2}
       py={1}
       display="flex"

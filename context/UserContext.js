@@ -1,12 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { PersistenceContext } from "./PersistenceProvider";
 
 export const UserContext = createContext();
 
-export default function UserContextProvider({ children }) {
+export default function UserContextProvider({ children, idb }) {
   const [currentUserId, setCurrentUserId] = useState("");
-  const { idb, channel } = useContext(PersistenceContext);
 
   useEffect(() => {
     const addUser = async () => {
@@ -14,12 +12,12 @@ export default function UserContextProvider({ children }) {
         name: `User ${Math.floor(Math.random() * 1000)}`,
       });
 
-      channel.postMessage({
-        type: "ADD_USER",
-        payload: {
-          userId,
-        },
-      });
+      // channel.postMessage({
+      //   type: "ADD_USER",
+      //   payload: {
+      //     userId,
+      //   },
+      // });
 
       setCurrentUserId(userId);
     };
@@ -27,9 +25,19 @@ export default function UserContextProvider({ children }) {
     addUser();
   }, []);
 
-  const dbUsers = useLiveQuery(() => idb.users.toArray());
+  const dbUsers = useLiveQuery(() => {
+    if (currentUserId) {
+      return idb.users.toArray();
+    }
+  }, [currentUserId]);
+
   const dbMyUser = useLiveQuery(() => {
-    return idb.users.where("id").equals(currentUserId).first();
+    if (currentUserId) {
+      return idb.users
+        .where("id")
+        .equals(+currentUserId)
+        .first();
+    }
   }, [currentUserId]);
 
   return (

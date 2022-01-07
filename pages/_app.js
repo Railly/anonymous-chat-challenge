@@ -1,12 +1,11 @@
-import { BroadcastChannel } from "broadcast-channel";
 import ChatContextProvider from "context/ChatContext";
 import UserContextProvider from "context/UserContext";
 import AppLayout from "components/AppLayout";
-import { useEffect } from "react/cjs/react.development";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import MainSidebar from "containers/MainSidebar";
 import ChatSidebar from "containers/ChatSidebar";
 import PersistenceProvider from "context/PersistenceProvider";
+import idb from "db";
 
 const GlobalStyle = createGlobalStyle`
   body, h1, h2, h3, span, div {
@@ -57,7 +56,7 @@ export default function App({ Component, pageProps }) {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <PersistenceProvider>
-          <UserContextProvider>
+          <UserContextProvider idb={idb}>
             <ChatContextProvider>
               <AppLayout>
                 <MainSidebar />

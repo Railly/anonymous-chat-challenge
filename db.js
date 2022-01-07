@@ -1,10 +1,17 @@
 import Dexie from "dexie";
 
-export const idb = new Dexie("myDatabase");
+// import "fake-indexeddb/auto";
+
+const idb = new Dexie("chat-db");
 
 idb.version(1).stores({
   users: "++id, name",
   categories: "++id, name",
-  chats: "++id, name, categoryId",
-  messages: "++id, chatId, text, userId, createdAt",
+  groupChats:
+    "++id, name, categoryId, lastMessage, lastMessageDate, lastMessageUserId, type",
+  messages: "++id, chatId, text, userId, createdAt, type",
+  directChats:
+    "++id, otherUserId, currentUserId, lastMessage, lastMessageDate, lastMessageUserId, type",
 });
+
+export default idb;

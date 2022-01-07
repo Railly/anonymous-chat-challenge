@@ -2,8 +2,11 @@ import LogoIcon from "components/LogoIcon";
 import ChatCategory from "containers/ChatCategory";
 import styled from "styled-components";
 import S from "components/Elements";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "context/ChatContext";
+import { UserContext } from "context/UserContext";
+import ChatUser from "./ChatUser";
+import { useRouter } from "next/router";
 
 const CustomInput = styled.input`
   display: inline-block;
@@ -121,8 +124,16 @@ const chats = [
 ];
 
 export default function MainSidebar() {
+  const router = useRouter();
   const [selected, setSelected] = useState("grupal");
   const { categories } = useContext(ChatContext);
+  const { users } = useContext(UserContext);
+
+  useEffect(() => {
+    if (router.pathname.includes("private-chat")) {
+      setSelected("individual");
+    }
+  }, [router.pathname]);
 
   return (
     <CustomSection>
@@ -141,7 +152,9 @@ export default function MainSidebar() {
         </S.Heading.H1>
         <CustomInput type="search" placeholder="Busca usuarios o grupos" />
         <Option
-          onClick={() => setSelected("grupal")}
+          onClick={() => {
+            setSelected("grupal");
+          }}
           isActive={selected === "grupal"}
         >
           <S.Span className="material-icons">groups</S.Span>
@@ -157,20 +170,23 @@ export default function MainSidebar() {
           <S.Span ml={2}>Mensajes directos</S.Span>
         </Option>
       </S.Div>
-      <CustomButton
-        width="100%"
-        onClick={() => setSelected("individual")}
-        variant="secondary"
-      >
-        <S.Span text="md" className="material-icons">
-          add
-        </S.Span>
-        <S.Span ml={2} text="base">
-          Nueva Categoría
-        </S.Span>
-      </CustomButton>
+      {selected === "grupal" && (
+        <CustomButton
+          width="100%"
+          onClick={() => setSelected("individual")}
+          variant="secondary"
+        >
+          <S.Span text="md" className="material-icons">
+            add
+          </S.Span>
+          <S.Span ml={2} text="base">
+            Nueva Categoría
+          </S.Span>
+        </CustomButton>
+      )}
       <CustomDiv>
-        {categories &&
+        {selected === "grupal" &&
+          categories &&
           categories.map((category) => (
             <ChatCategory
               key={category.id}
@@ -178,6 +194,9 @@ export default function MainSidebar() {
               id={category.id}
             />
           ))}
+        {selected === "individual" &&
+          users &&
+          users.map((user) => <ChatUser key={user.id} user={user} />)}
       </CustomDiv>
     </CustomSection>
   );

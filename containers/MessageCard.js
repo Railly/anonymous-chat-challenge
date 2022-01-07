@@ -12,6 +12,7 @@ const MessageCloud = styled.article`
   display: flex;
   justify-self: flex-end;
   width: max-content;
+  max-width: 50%;
   padding: 1rem;
   background-color: ${(p) =>
     p.isOwn ? p.theme.colors.primary : p.theme.colors.white};
@@ -23,12 +24,19 @@ const MessageCloud = styled.article`
   margin-bottom: 1rem;
 `;
 
+const RoundedImage = styled(Image)`
+  border-radius: 50%;
+`;
+
 export default function MessageCard({ message }) {
   const { idb } = useContext(PersistenceContext);
   const { currentUser } = useContext(UserContext);
 
   const user = useLiveQuery(() =>
-    idb.users.where("id").equals(message.userId).first()
+    idb.users
+      .where("id")
+      .equals(+message.userId)
+      .first()
   );
 
   return (
@@ -42,7 +50,11 @@ export default function MessageCard({ message }) {
       <MessageCloud isOwn={message.userId === currentUser?.id}>
         <S.Div display="flex" direction="column">
           <S.Div>
-            <Image width={50} height={50} src={getGravatar(user?.name)} />
+            <RoundedImage
+              width={50}
+              height={50}
+              src={getGravatar(user ? user.name : "User 800")}
+            />
           </S.Div>
           <S.Span>{parseDate(message.createdAt)}</S.Span>
         </S.Div>

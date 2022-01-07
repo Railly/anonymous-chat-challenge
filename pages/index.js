@@ -49,9 +49,10 @@ export default function Home() {
         </CustomButton>
         <CustomButton
           onClick={() => {
-            idb.chats.add({
+            idb.groupChats.add({
               name: `Nuevo chat ${Math.floor(Math.random() * 100)}`,
               categoryId: 1,
+              type: "group",
             });
           }}
         >
@@ -64,6 +65,34 @@ export default function Home() {
               text: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
               userId: currentUser.id,
               createdAt: new Date(),
+              type: "group",
+            });
+
+            idb.groupChats.update(1, {
+              lastMessage: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
+              lastMessageDate: new Date(),
+              lastMessageUserId: currentUser.id,
+              type: "group",
+            });
+          }}
+        >
+          <S.Span ml={2}>Agregar mensaje a chat 1</S.Span>
+        </CustomButton>
+        <CustomButton
+          onClick={() => {
+            idb.messages.add({
+              chatId: 2,
+              text: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
+              userId: currentUser.id,
+              createdAt: new Date(),
+              type: "group",
+            });
+
+            idb.groupChats.update(2, {
+              lastMessage: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
+              lastMessageDate: new Date(),
+              lastMessageUserId: currentUser.id,
+              type: "group",
             });
           }}
         >
