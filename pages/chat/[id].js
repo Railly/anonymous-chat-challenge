@@ -9,6 +9,13 @@ import styled from "styled-components";
 const CustomSection = styled.section`
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background-color: ${(p) => p.theme.colors.mediumPrimary};
+`;
+
+const CustomDiv = styled.div`
+  display: flex;
+  flex-direction: column;
   max-height: 100vh;
   background-color: ${(p) => p.theme.colors.mediumPrimary};
   overflow-y: scroll;
@@ -52,15 +59,19 @@ export default function ChatID() {
 
   return (
     <CustomSection>
-      <S.Heading.H1 text="lg" color="black" display="flex" items="center">
-        {chat && chat.name}
-      </S.Heading.H1>
-      <S.Div display="flex" direction="column">
-        {messages?.length > 0 &&
-          messages.map((message) => (
-            <MessageCard key={message.id} message={message} />
-          ))}
-      </S.Div>
+      <CustomDiv>
+        {chat && (
+          <S.Heading.H1 text="lg" color="black" display="flex" items="center">
+            {chat.name}
+          </S.Heading.H1>
+        )}
+        <S.Div display="flex" direction="column">
+          {messages?.length > 0 &&
+            messages.map((message) => (
+              <MessageCard key={message.id} message={message} />
+            ))}
+        </S.Div>
+      </CustomDiv>
     </CustomSection>
   );
 }
