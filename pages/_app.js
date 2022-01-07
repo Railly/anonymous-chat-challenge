@@ -1,9 +1,12 @@
 import { BroadcastChannel } from "broadcast-channel";
 import ChatContextProvider from "context/ChatContext";
 import UserContextProvider from "context/UserContext";
+import AppLayout from "components/AppLayout";
 import { idb } from "db";
 import { useEffect } from "react/cjs/react.development";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import MainSidebar from "containers/MainSidebar";
+import ChatSidebar from "containers/ChatSidebar";
 
 const GlobalStyle = createGlobalStyle`
   body, h1, h2, h3, span, div {
@@ -56,8 +59,12 @@ export default function App({ Component, pageProps }) {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <UserContextProvider idb={idb} channel={channel}>
-          <ChatContextProvider>
-            <Component channel={channel} idb={idb} {...pageProps} />
+          <ChatContextProvider idb={idb} channel={channel}>
+            <AppLayout>
+              <MainSidebar />
+              <Component channel={channel} idb={idb} {...pageProps} />
+              <ChatSidebar />
+            </AppLayout>
           </ChatContextProvider>
         </UserContextProvider>
       </ThemeProvider>

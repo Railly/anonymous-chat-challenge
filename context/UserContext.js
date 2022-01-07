@@ -19,31 +19,12 @@ export default function UserContextProvider({ children, idb, channel }) {
           userId,
         },
       });
+
       console.log("Added user", userId);
       setCurrentUserId(userId);
     };
 
     addUser();
-
-    // channel.onmessage = (message) => {
-    //   if (message.data.type === "ADD_MESSAGE") {
-    //     const { payload } = message.data;
-    //     idb.messages.add(payload);
-    //   }
-    // };
-
-    // const closeChannel = async (userId) => {
-    //   channel.postMessage({
-    //     type: "CLOSE_CHANNEL",
-    //     payload: {
-    //       userId,
-    //     },
-    //   });
-    // };
-
-    // return () => {
-    //   closeChannel(userId);
-    // };
   }, []);
 
   const dbUsers = useLiveQuery(() => idb.users.toArray());
