@@ -2,7 +2,8 @@ import LogoIcon from "components/LogoIcon";
 import ChatCategory from "containers/ChatCategory";
 import styled from "styled-components";
 import S from "components/Elements";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ChatContext } from "context/ChatContext";
 
 const CustomInput = styled.input`
   display: inline-block;
@@ -121,6 +122,7 @@ const chats = [
 
 export default function MainSidebar() {
   const [selected, setSelected] = useState("grupal");
+  const { categories } = useContext(ChatContext);
 
   return (
     <CustomSection>
@@ -168,13 +170,14 @@ export default function MainSidebar() {
         </S.Span>
       </CustomButton>
       <CustomDiv>
-        <ChatCategory name="Categoría 1" chats={chats} />
-        <ChatCategory name="Categoría 2" chats={chats} />
-        <ChatCategory name="Categoría 3" chats={chats} />
-        <ChatCategory name="Categoría 4" chats={chats} />
-        <ChatCategory name="Categoría 4" chats={chats} />
-        <ChatCategory name="Categoría 4" chats={chats} />
-        <ChatCategory name="Categoría 4" chats={chats} />
+        {categories &&
+          categories.map((category) => (
+            <ChatCategory
+              key={category.id}
+              name={category.name}
+              id={category.id}
+            />
+          ))}
       </CustomDiv>
     </CustomSection>
   );

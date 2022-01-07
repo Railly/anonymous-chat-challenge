@@ -2,6 +2,9 @@ import { useContext, useState } from "react";
 import S from "components/Elements";
 import styled from "styled-components";
 import { ChatContext } from "context/ChatContext";
+import { useLiveQuery } from "dexie-react-hooks";
+import { PersistenceContext } from "context/PersistenceProvider";
+import { useRouter } from "next/router";
 
 const CustomH3 = styled.h3`
   display: flex;
@@ -24,9 +27,15 @@ const CustomSpan = styled.span`
   padding-left: 1.5rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  background-color: ${(p) =>
+    p.isActive ? p.theme.colors.primary : p.theme.colors.transparent};
+  color: ${(p) => (p.isActive ? p.theme.colors.white : p.theme.colors.primary)};
+  border-radius: 5px;
+
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: ${(p) => p.theme.colors.lightPrimary};
+    background-color: ${(p) =>
+      p.isActive ? p.theme.colors.primary : p.theme.colors.lightPrimary};
   }
 `;
 
@@ -56,8 +65,13 @@ const CustomButton = styled.button`
   margin-bottom: 0.5rem;
 `;
 
-export default function ChatCategory({ name, chats = [] }) {
+export default function ChatCategory({ name, id }) {
   const [isDisclosureOpen, setIsDisclosureOpen] = useState(true);
+  const { idb } = useContext(PersistenceContext);
+
+  const chats = useLiveQuery(() =>
+    idb.chats.where("categoryId").equals(id).toArray()
+  );
 
   return (
     <>
@@ -70,9 +84,8 @@ export default function ChatCategory({ name, chats = [] }) {
         <S.Span ml={2}>{name}</S.Span>
       </CustomH3>
       <CustomDiv isOpen={isDisclosureOpen}>
-        {chats.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} />
-        ))}
+        {chats?.length > 0 &&
+          chats.map((chat) => <ChatItem key={chat.id} chat={chat} />)}
         <CustomButton width="100%" variant="secondary">
           <S.Span text="md" className="material-icons">
             add
@@ -87,12 +100,16 @@ export default function ChatCategory({ name, chats = [] }) {
 }
 
 const ChatItem = ({ chat }) => {
+  const router = useRouter();
   const { currentChatId, setCurrentChatId } = useContext(ChatContext);
 
   return (
     <CustomSpan
-      onClick={() => setCurrentChatId(chat.id)}
-      isActive={currentChatId === chat.id}
+      onClick={() => {
+        setCurrentChatId(chat.id);
+        router.push(`/chat/${chat.id}`);
+      }}
+      isActive={currentChatId === +chat.id}
       px={2}
       py={1}
       display="flex"

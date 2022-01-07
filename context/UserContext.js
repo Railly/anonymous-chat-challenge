@@ -1,11 +1,12 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect } from "react/cjs/react.development";
+import { PersistenceContext } from "./PersistenceProvider";
 
 export const UserContext = createContext();
 
-export default function UserContextProvider({ children, idb, channel }) {
+export default function UserContextProvider({ children }) {
   const [currentUserId, setCurrentUserId] = useState("");
+  const { idb, channel } = useContext(PersistenceContext);
 
   useEffect(() => {
     const addUser = async () => {
@@ -20,7 +21,6 @@ export default function UserContextProvider({ children, idb, channel }) {
         },
       });
 
-      console.log("Added user", userId);
       setCurrentUserId(userId);
     };
 
