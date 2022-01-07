@@ -2,8 +2,9 @@ import S from "components/Elements";
 import AppLayout from "components/AppLayout";
 import LogoIcon from "components/LogoIcon";
 import ChatCategory from "containers/ChatCategory";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
+import { UserContext } from "context/UserContext";
 
 const CustomInput = styled.input`
   display: inline-block;
@@ -133,8 +134,14 @@ const chats = [
   },
 ];
 
-export default function Home() {
+export default function Home({ channel, idb }) {
   const [selected, setSelected] = useState("grupal");
+  const [channelMessage, setChannelMessage] = useState("");
+  const { users, currentUser } = useContext(UserContext);
+
+  console.log(users, "users");
+  console.log(currentUser, "currentUser");
+
   return (
     <AppLayout>
       <CustomSection>
@@ -181,6 +188,12 @@ export default function Home() {
             Nueva Categoría
           </S.Span>
         </CustomButton>
+        <CustomButton
+          onClick={() => postMessage("Hello Fucking World")}
+          variant="secondary"
+        >
+          Enviar mensaje
+        </CustomButton>
         <CustomDiv>
           <ChatCategory name="Categoría 1" chats={chats} />
           <ChatCategory name="Categoría 2" chats={chats} />
@@ -196,12 +209,15 @@ export default function Home() {
           <S.Span text="lg" className="material-icons">
             send
           </S.Span>
+          {channelMessage !== "" && <S.Span ml={2}>{channelMessage}</S.Span>}
         </h1>
       </S.Section>
       <S.Section minHeight="100vh" bgColor="white">
         <S.Div display="flex" items="center" ml={4} mt={2}>
           <CircleDiv />
-          <S.Heading.H1 text="md">@RandomUser99</S.Heading.H1>
+          {currentUser && (
+            <S.Heading.H1 text="md">{currentUser?.name}</S.Heading.H1>
+          )}
         </S.Div>
         <S.Heading.H2 text="base" ml={4} mt={2}>
           Mis Chats

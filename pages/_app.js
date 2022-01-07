@@ -1,4 +1,8 @@
+import { BroadcastChannel } from "broadcast-channel";
 import ChatContextProvider from "context/ChatContext";
+import UserContextProvider from "context/UserContext";
+import { idb } from "db";
+import { useEffect } from "react/cjs/react.development";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -45,13 +49,17 @@ const theme = {
 };
 
 export default function App({ Component, pageProps }) {
+  const channel = new BroadcastChannel("chat-bc");
+
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <ChatContextProvider>
-          <Component {...pageProps} />
-        </ChatContextProvider>
+        <UserContextProvider idb={idb} channel={channel}>
+          <ChatContextProvider>
+            <Component channel={channel} idb={idb} {...pageProps} />
+          </ChatContextProvider>
+        </UserContextProvider>
       </ThemeProvider>
     </>
   );
