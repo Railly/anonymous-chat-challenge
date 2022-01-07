@@ -36,27 +36,47 @@ const CustomDiv = styled.div`
 
 export default function PrivateChatID() {
   const router = useRouter();
-  const { id } = router.query;
+  const { otherUserId, currentUserId } = router.query;
   const { idb } = useContext(PersistenceContext);
 
   const chat = useLiveQuery(() => {
-    if (id) {
-      return idb.directChats
-        .where("id")
-        .equals(+id)
-        .first();
+    if (otherUserId && currentUserId) {
+      return (
+        idb.directChats
+          .where("otherUserId")
+          .equals(+otherUserId)
+          .or("currentUserId")
+          .equals(+otherUserId)
+          // .and(
+          //   (chat) =>
+          //     chat.otherUserId === +currentUserId ||
+          //     chat.currentUserId === +currentUserId
+          // )
+          .first()
+      );
     }
-  }, [id]);
+  }, [otherUserId, currentUserId]);
 
   const messages = useLiveQuery(() => {
-    if (id) {
+    if (chat) {
+      console.log(otherUserId, currentUserId);
       return idb.messages
-        .where("chatId")
-        .equals(+id)
-        .and((item) => item.type === "private")
+        .where("type")
+        .equals("private")
+        .and(
+          (message) =>
+            (message.chatId === +otherUserId &&
+              message.userId === +currentUserId) ||
+            (message.chatId === +currentUserId &&
+              message.userId === +otherUserId)
+        )
         .toArray();
     }
-  }, [id]);
+  }, [chat]);
+
+  console.log(chat, "chat");
+
+  console.log(messages, "messages");
 
   return (
     <CustomSection>

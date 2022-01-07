@@ -6,20 +6,40 @@ export const UserContext = createContext();
 export default function UserContextProvider({ children, idb }) {
   const [currentUserId, setCurrentUserId] = useState("");
 
-  useEffect(() => {
+  useEffect(async () => {
     const addUser = async () => {
       const userId = await idb.users.add({
         name: `User ${Math.floor(Math.random() * 1000)}`,
       });
-
-      // channel.postMessage({
-      //   type: "ADD_USER",
-      //   payload: {
-      //     userId,
-      //   },
-      // });
-
       setCurrentUserId(userId);
+
+      console.log("userId", userId);
+      const users = await idb.users.toArray();
+      const directChats = await idb.directChats.toArray();
+
+      const bulk = users
+        .map((user) => {
+          const chat = directChats.find(
+            (chat) =>
+              (chat.otherUserId === user.id && chat.currentUserId === userId) ||
+              (chat.otherUserId === userId && chat.currentUserId === user.id)
+          );
+
+          if (!chat) {
+            return {
+              otherUserId: user.id,
+              currentUserId: userId,
+              type: "private",
+            };
+          }
+        })
+        .filter((chat) => chat.otherUserId !== userId);
+
+      console.log("bulk", bulk);
+
+      if (bulk) {
+        await idb.directChats.bulkAdd(bulk);
+      }
     };
 
     addUser();

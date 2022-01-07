@@ -1,5 +1,6 @@
 import S from "components/Elements";
 import { ChatContext } from "context/ChatContext";
+import { UserContext } from "context/UserContext";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext } from "react";
@@ -30,18 +31,19 @@ const RoundedImage = styled(Image)`
   border-radius: 50%;
 `;
 
-export default function ChatUser({ user }) {
+export default function ChatUser({ user: otherUser }) {
   const router = useRouter();
   const { currentPrivateChatId, setCurrentPrivateChatId } =
     useContext(ChatContext);
+  const { currentUser } = useContext(UserContext);
 
   return (
     <CustomSpan
       onClick={() => {
-        setCurrentPrivateChatId(user.id);
-        router.push(`/private-chat/${user.id}`);
+        setCurrentPrivateChatId(otherUser.id);
+        router.push(`/private-chat/${otherUser.id}/${currentUser.id}`);
       }}
-      isActive={currentPrivateChatId === +user.id}
+      isActive={currentPrivateChatId === +otherUser.id}
       px={2}
       py={1}
       display="flex"
@@ -49,9 +51,13 @@ export default function ChatUser({ user }) {
     >
       <S.Span className="material-icons">tag</S.Span>
       <S.Div display="flex" items="center" justify="center" width="30%">
-        <RoundedImage width={45} height={45} src={getGravatar(user?.name)} />
+        <RoundedImage
+          width={45}
+          height={45}
+          src={getGravatar(otherUser?.name)}
+        />
       </S.Div>
-      <S.Span>{user.name}</S.Span>
+      <S.Span>{otherUser.name}</S.Span>
     </CustomSpan>
   );
 }

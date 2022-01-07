@@ -44,13 +44,17 @@ export default function ChatCard({ id, type }) {
   const { currentUser } = useContext(UserContext);
   const { currentGroupChatId, setCurrentGroupChatId } = useContext(ChatContext);
   const { idb } = useContext(PersistenceContext);
+  console.log(type, "type");
+  console.log(id, "id");
 
-  const chat = useLiveQuery(() =>
-    idb.groupChats
-      .where("id")
+  const chat = useLiveQuery(() => {
+    const chats = type === "group" ? idb.groupChats : idb.directChats;
+    const fieldName = type === "group" ? "id" : "otherUserId";
+    return chats
+      .where(fieldName)
       .equals(+id)
-      .first()
-  );
+      .first();
+  });
 
   const lastUser = useLiveQuery(() => {
     if (chat?.lastMessageUserId) {
@@ -61,12 +65,18 @@ export default function ChatCard({ id, type }) {
     }
   }, [chat]);
 
+  console.log(chat);
+
   return (
     <CustomSection
       isActive={currentGroupChatId === +id}
       onClick={() => {
         setCurrentGroupChatId(+id);
-        router.push(`/${type}-chat/${id}`);
+        if (chat?.type === "group") {
+          router.push(`/group-chat/${id}`);
+        } else {
+          router.push(`/private-chat/${id}/${currentUser.id}`);
+        }
       }}
     >
       {chat && (

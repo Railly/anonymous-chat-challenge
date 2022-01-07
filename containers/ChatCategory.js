@@ -5,6 +5,7 @@ import { ChatContext } from "context/ChatContext";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PersistenceContext } from "context/PersistenceProvider";
 import { useRouter } from "next/router";
+import { UserContext } from "context/UserContext";
 
 const CustomH3 = styled.h3`
   display: flex;
@@ -102,13 +103,17 @@ export default function ChatCategory({ name, id }) {
 const ChatItem = ({ chat }) => {
   const router = useRouter();
   const { currentGroupChatId, setCurrentGroupChatId } = useContext(ChatContext);
-  console.log(chat, "chat");
+  const { currentUser } = useContext(UserContext);
 
   return (
     <CustomSpan
       onClick={() => {
         setCurrentGroupChatId(chat.id);
-        router.push(`/${chat.type}-chat/${chat.id}`);
+        if (chat.type === "group") {
+          router.push(`/group-chat/${chat.id}`);
+        } else {
+          router.push(`/private-chat/${chat.id}/${currentUser.id}`);
+        }
       }}
       isActive={currentGroupChatId === +chat.id}
       px={2}

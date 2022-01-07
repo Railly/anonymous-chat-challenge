@@ -80,23 +80,26 @@ export default function Home() {
         </CustomButton>
         <CustomButton
           onClick={() => {
-            idb.messages.add({
-              chatId: 2,
-              text: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
-              userId: currentUser.id,
-              createdAt: new Date(),
-              type: "group",
-            });
-
-            idb.groupChats.update(2, {
-              lastMessage: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
-              lastMessageDate: new Date(),
-              lastMessageUserId: currentUser.id,
-              type: "group",
+            idb.transaction("rw", idb.messages, idb.directChats, () => {
+              idb.messages.add({
+                chatId: 1,
+                text: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
+                userId: currentUser.id,
+                createdAt: new Date(),
+                type: "private",
+              });
+              idb.directChats.update(2, {
+                otherUserId: 1,
+                currentUserId: currentUser.id,
+                lastMessage: `Nuevo mensaje ${Math.floor(Math.random() * 100)}`,
+                lastMessageDate: new Date(),
+                lastMessageUserId: currentUser.id,
+                type: "private",
+              });
             });
           }}
         >
-          <S.Span ml={2}>Agregar mensaje a chat 1</S.Span>
+          <S.Span ml={2}>Agregar mensaje a usuario 1</S.Span>
         </CustomButton>
       </S.Heading.H1>
     </S.Section>
