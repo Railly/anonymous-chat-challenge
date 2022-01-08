@@ -4,38 +4,9 @@ import { useContext, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PersistenceContext } from "context/PersistenceProvider";
 import MessageCard from "containers/MessageCard";
-import styled from "styled-components";
-
-const CustomSection = styled.section`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: ${(p) => p.theme.colors.mediumPrimary};
-`;
-
-const CustomDiv = styled.div`
-  display: flex;
-  height: 85%;
-  flex-direction: column;
-  max-height: 85vh;
-  background-color: ${(p) => p.theme.colors.mediumPrimary};
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${(p) => p.theme.colors.lightPrimary};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(p) => p.theme.colors.primary};
-    border-radius: 5px;
-  }
-`;
+import { ChatInput } from "components/inputs/ChatInput";
+import { SendButton } from "components/buttons/SendButton";
+import { CustomDiv, CustomSection } from "components/Wrapper";
 
 export default function PrivateChatID() {
   const router = useRouter();
@@ -71,13 +42,32 @@ export default function PrivateChatID() {
     }
   }, [chat]);
 
-  console.log(chat, "chat");
-
   const user = useLiveQuery(() => {
     if (chat) {
       return idb.users.where("id").equals(chat.otherUserId).first();
     }
   }, [chat]);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    idb.transaction("rw", idb.messages, idb.directChats, async () => {
+      await idb.messages.add({
+        chatId: +chat.id,
+        text: textMessage,
+        userId: +currentUserId,
+        otherUserId: +otherUserId,
+        createdAt: new Date(),
+        type: "private",
+      });
+
+      await idb.directChats.update(+chat.id, {
+        lastMessage: textMessage,
+        lastMessageDate: new Date(),
+        lastMessageUserId: +currentUserId,
+      });
+    });
+    setTextMessage("");
+  };
 
   return (
     <CustomSection>
@@ -95,33 +85,14 @@ export default function PrivateChatID() {
         </S.Div>
       </CustomDiv>
       <S.Form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          idb.transaction("rw", idb.messages, idb.directChats, async () => {
-            await idb.messages.add({
-              chatId: +chat.id,
-              text: textMessage,
-              userId: +currentUserId,
-              otherUserId: +otherUserId,
-              createdAt: new Date(),
-              type: "private",
-            });
-
-            await idb.directChats.update(+chat.id, {
-              lastMessage: textMessage,
-              lastMessageDate: new Date(),
-              lastMessageUserId: +currentUserId,
-            });
-          });
-          setTextMessage("");
-        }}
+        onSubmit={onSubmit}
         display="flex"
         width="95%"
         height="12%"
         mt={2}
         mx={4}
       >
-        <CustomInput
+        <ChatInput
           onChange={(e) => {
             e.preventDefault();
             setTextMessage(e.target.value);
@@ -130,53 +101,10 @@ export default function PrivateChatID() {
           value={textMessage}
           placeholder="Escribe un mensaje..."
         />
-        <CustomButton disabled={textMessage === ""} type="submit" mt={2}>
+        <SendButton disabled={textMessage === ""} type="submit" mt={2}>
           <S.Span className="material-icons">send</S.Span>
-        </CustomButton>
+        </SendButton>
       </S.Form>
     </CustomSection>
   );
 }
-
-const CustomInput = styled.input`
-  font-family: "Inter", sans-serif;
-  border: none;
-  border-radius: 0;
-  outline: none;
-  padding: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  color: ${(p) => p.theme.colors.black};
-  background-color: ${(p) => p.theme.colors.white};
-  width: 90%;
-`;
-
-const CustomButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  cursor: pointer;
-  padding: 0.5rem;
-  background-color: ${(p) => p.theme.colors.primary};
-  color: ${(p) => p.theme.colors.white};
-  font-size: 1.2rem;
-  font-weight: 500;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  width: 10%;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    background-color: ${(p) => p.theme.darkColors.primary};
-    transition: all 0.2s ease-in-out;
-  }
-
-  &:disabled {
-    transition: all 0.2s ease-in-out;
-    background-color: ${(p) => p.theme.colors.lightPrimary};
-    color: ${(p) => p.theme.colors.mediumPrimary};
-    cursor: not-allowed;
-  }
-`;

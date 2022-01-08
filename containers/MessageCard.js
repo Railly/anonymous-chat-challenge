@@ -8,6 +8,7 @@ import { getGravatar } from "utils/getGravatar";
 import styled from "styled-components";
 import { UserContext } from "context/UserContext";
 import { useState } from "react";
+import { RoundedImage } from "components/RoundedImage";
 
 const MessageCloud = styled.article`
   display: flex;
@@ -22,10 +23,6 @@ const MessageCloud = styled.article`
   border-bottom-right-radius: ${(p) => (p.isOwn ? "0" : "25px")};
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
-`;
-
-const RoundedImage = styled(Image)`
-  border-radius: 50%;
 `;
 
 const CustomDiv = styled.div`

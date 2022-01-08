@@ -1,7 +1,7 @@
 import S from "components/Elements";
+import ProfileImage from "components/ProfileImage";
 import { ChatContext } from "context/ChatContext";
 import { UserContext } from "context/UserContext";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import styled from "styled-components";
@@ -25,10 +25,6 @@ const CustomSpan = styled.span`
     background-color: ${(p) =>
       p.isActive ? p.theme.colors.primary : p.theme.colors.lightPrimary};
   }
-`;
-
-const RoundedImage = styled(Image)`
-  border-radius: 50%;
 `;
 
 export default function ChatUser({ user: otherUser }) {
@@ -55,11 +51,7 @@ export default function ChatUser({ user: otherUser }) {
     >
       <S.Span className="material-icons">tag</S.Span>
       <S.Div display="flex" items="center" justify="center" width="30%">
-        <RoundedImage
-          width={45}
-          height={45}
-          src={getGravatar(otherUser?.name)}
-        />
+        <ProfileImage username={otherUser?.name} size={45} />
       </S.Div>
       <S.Span>{otherUser.name}</S.Span>
     </CustomSpan>

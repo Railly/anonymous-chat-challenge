@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { UserContext } from "context/UserContext";
 import { ChatContext } from "context/ChatContext";
 import { useContext } from "react";
-import Image from "next/image";
 import { reduceToUnique } from "utils/reduceToUnique";
-import { useRouter } from "next/router";
 import ChatCard from "./ChatCard";
 import UserProfile from "./UserProfile";
 
@@ -31,7 +29,6 @@ const CustomDiv = styled.div`
 `;
 
 export default function ChatSidebar() {
-  const router = useRouter();
   const { currentUser } = useContext(UserContext);
   const { messages } = useContext(ChatContext);
 

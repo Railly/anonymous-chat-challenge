@@ -5,14 +5,9 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useRouter } from "next/router";
 import { parseDate } from "utils/parseDate";
 import styled from "styled-components";
-import { getGravatar } from "utils/getGravatar";
-import Image from "next/image";
 import { UserContext } from "context/UserContext";
 import { ChatContext } from "context/ChatContext";
-
-const RoundedImage = styled(Image)`
-  border-radius: 50%;
-`;
+import ProfileImage from "components/ProfileImage";
 
 const TruncatedText = styled.span`
   overflow: hidden;
@@ -91,6 +86,28 @@ export default function ChatCard({ id, type }) {
     }
   }, [chat]);
 
+  const onClick = () => {
+    if (type === "group") {
+      setCurrentGroupChatId(+id);
+      setCurrentPrivateChatId("");
+    } else {
+      setCurrentPrivateChatId(otherUser?.id);
+      setCurrentGroupChatId("");
+    }
+    if (chat?.type === "group") {
+      router.push(`/group-chat/${id}`);
+    } else {
+      router.push(
+        `/private-chat/${
+          chat.otherUserId === currentUser.id
+            ? chat.currentUserId
+            : chat.otherUserId
+        }/${currentUser.id}`
+      );
+      console.log(otherUser.id, "otherUser.id");
+    }
+  };
+
   return (
     <CustomSection
       isActive={
@@ -98,40 +115,15 @@ export default function ChatCard({ id, type }) {
           ? currentGroupChatId === id
           : currentPrivateChatId === otherUser?.id
       }
-      onClick={() => {
-        if (type === "group") {
-          setCurrentGroupChatId(+id);
-          setCurrentPrivateChatId("");
-        } else {
-          setCurrentPrivateChatId(otherUser?.id);
-          setCurrentGroupChatId("");
-        }
-        if (chat?.type === "group") {
-          router.push(`/group-chat/${id}`);
-        } else {
-          router.push(
-            `/private-chat/${
-              chat.otherUserId === currentUser.id
-                ? chat.currentUserId
-                : chat.otherUserId
-            }/${currentUser.id}`
-          );
-          console.log(otherUser.id, "otherUser.id");
-        }
-      }}
+      onClick={onClick}
     >
       {chat && (
         <>
           <S.Div display="flex" width="100%" py={1}>
             <S.Div display="flex" items="center" justify="center" width="30%">
-              <RoundedImage
-                width={45}
-                height={45}
-                src={
-                  type === "group"
-                    ? getGravatar(lastUser?.name)
-                    : getGravatar(otherUser?.name)
-                }
+              <ProfileImage
+                username={type === "group" ? lastUser?.name : otherUser?.name}
+                size={50}
               />
             </S.Div>
             <S.Div
