@@ -6,7 +6,7 @@ import { PersistenceContext } from "context/PersistenceProvider";
 import MessageCard from "containers/MessageCard";
 import { ChatInput } from "components/inputs/ChatInput";
 import { SendButton } from "components/buttons/SendButton";
-import { CustomDiv, CustomSection } from "components/Wrapper";
+import { CustomDiv, CustomSection, FixedDiv } from "components/Wrapper";
 
 export default function PrivateChatID() {
   const router = useRouter();
@@ -72,12 +72,14 @@ export default function PrivateChatID() {
   return (
     <CustomSection>
       <CustomDiv>
-        {user && (
-          <S.Heading.H1 text="lg" color="black" display="flex" items="center">
-            {user.name}
-          </S.Heading.H1>
-        )}
-        <S.Div display="flex" direction="column">
+        <FixedDiv>
+          {user && (
+            <S.Heading.H1 text="lg" display="flex" items="center">
+              {user.name}
+            </S.Heading.H1>
+          )}
+        </FixedDiv>
+        <S.Div mt={16} display="flex" direction="column">
           {messages?.length > 0 &&
             messages.map((message) => (
               <MessageCard key={message.id} message={message} />

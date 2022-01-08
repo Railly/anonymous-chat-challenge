@@ -7,7 +7,7 @@ import MessageCard from "containers/MessageCard";
 import { UserContext } from "context/UserContext";
 import { ChatInput } from "components/inputs/ChatInput";
 import { SendButton } from "components/buttons/SendButton";
-import { CustomDiv, CustomSection } from "components/Wrapper";
+import { CustomDiv, CustomSection, FixedDiv } from "components/Wrapper";
 
 export default function GroupChatID() {
   const router = useRouter();
@@ -59,12 +59,14 @@ export default function GroupChatID() {
   return (
     <CustomSection>
       <CustomDiv>
-        {chat && (
-          <S.Heading.H1 text="lg" color="black" display="flex" items="center">
-            {chat.name}
-          </S.Heading.H1>
-        )}
-        <S.Div display="flex" direction="column">
+        <FixedDiv>
+          {chat && (
+            <S.Heading.H1 text="lg" display="flex" items="center">
+              {chat.name}
+            </S.Heading.H1>
+          )}
+        </FixedDiv>
+        <S.Div mt={16} display="flex" direction="column">
           {messages?.length > 0 &&
             messages.map((message) => (
               <MessageCard key={message.id} message={message} />

@@ -1,4 +1,4 @@
-import cm from "./calculateMeasure";
+import cm from "../calculateMeasure";
 
 export const getWidthStyles = ({ width, minWidth, maxWidth }) => {
   let stylesStringified = "";

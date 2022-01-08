@@ -38,7 +38,9 @@ export default function UserProfile({ currentUser }) {
       variant="secondary"
     >
       <ProfileImage userName={currentUser?.name} size={50} />
-      <S.Heading.H1 text="md">{currentUser?.name}</S.Heading.H1>
+      <S.Heading.H1 maxWidth="60%" ml={4} text="md">
+        {currentUser?.name}
+      </S.Heading.H1>
       <S.Span ml={5} text="lg" className="material-icons">
         edit
       </S.Span>

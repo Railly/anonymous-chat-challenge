@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { getFlexStyles } from "utils/flex";
-import { getFontSize } from "utils/fontSize";
-import { getFontWeight } from "utils/fontWeight";
-import { getHeightStyles } from "utils/height";
-import { getMargin, getPadding } from "utils/spacing";
-import { getWidthStyles } from "utils/width";
+import { getFlexStyles } from "utils/styling/flex";
+import { getFontSize } from "utils/styling/fontSize";
+import { getFontWeight } from "utils/styling/fontWeight";
+import { getHeightStyles } from "utils/styling/height";
+import { getMargin, getPadding } from "utils/styling/spacing";
+import { getWidthStyles } from "utils/styling/width";
 
 const Div = styled.div`
   background-color: ${({ theme, bgColor = "transparent" }) =>
