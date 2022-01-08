@@ -71,12 +71,20 @@ export default function PrivateChatID() {
     }
   }, [chat]);
 
+  console.log(chat, "chat");
+
+  const user = useLiveQuery(() => {
+    if (chat) {
+      return idb.users.where("id").equals(chat.otherUserId).first();
+    }
+  }, [chat]);
+
   return (
     <CustomSection>
       <CustomDiv>
-        {chat && (
+        {user && (
           <S.Heading.H1 text="lg" color="black" display="flex" items="center">
-            {chat.name}
+            {user.name}
           </S.Heading.H1>
         )}
         <S.Div display="flex" direction="column">
@@ -113,7 +121,7 @@ export default function PrivateChatID() {
         mt={2}
         mx={4}
       >
-        <CustomTextarea
+        <CustomInput
           onChange={(e) => {
             e.preventDefault();
             setTextMessage(e.target.value);
@@ -130,14 +138,13 @@ export default function PrivateChatID() {
   );
 }
 
-const CustomTextarea = styled.textarea`
+const CustomInput = styled.input`
   font-family: "Inter", sans-serif;
   border: none;
   border-radius: 0;
   outline: none;
   padding: 0.5rem;
   font-size: 1.2rem;
-  resize: none;
   font-weight: 500;
   margin-bottom: 1rem;
   color: ${(p) => p.theme.colors.black};

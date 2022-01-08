@@ -130,7 +130,7 @@ export default function MainSidebar() {
           >
             <CustomInput
               type="text"
-              placeholder="Nombre del chat"
+              placeholder="Busca por usuario o grupo"
               name="name"
               onChange={async (e) => {
                 setSearchText(e.target.value);
@@ -138,7 +138,7 @@ export default function MainSidebar() {
             />
             <FilterButton type="submit">
               <S.Span text="md" className="material-icons">
-                add
+                search
               </S.Span>
             </FilterButton>
           </S.Form>

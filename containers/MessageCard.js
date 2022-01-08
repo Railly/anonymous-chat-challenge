@@ -7,11 +7,11 @@ import { parseDate } from "utils/parseDate";
 import { getGravatar } from "utils/getGravatar";
 import styled from "styled-components";
 import { UserContext } from "context/UserContext";
+import { useState } from "react";
 
 const MessageCloud = styled.article`
   display: flex;
   justify-self: flex-end;
-  width: max-content;
   max-width: 50%;
   padding: 1rem;
   background-color: ${(p) =>
@@ -28,7 +28,15 @@ const RoundedImage = styled(Image)`
   border-radius: 50%;
 `;
 
+const CustomDiv = styled.div`
+  overflow-wrap: break-word;
+  word-break: break-word;
+  padding: 0.875rem;
+  max-width: 80%;
+`;
+
 export default function MessageCard({ message }) {
+  const [isVisible, setIsVisible] = useState(false);
   const { idb } = useContext(PersistenceContext);
   const { currentUser } = useContext(UserContext);
 
@@ -40,26 +48,37 @@ export default function MessageCard({ message }) {
   );
 
   return (
-    <S.Section
-      width="95%"
-      display="flex"
-      direction={message.userId === currentUser?.id ? "row-reverse" : "row"}
-      ml={message.userId !== currentUser?.id && 6}
-    >
-      <MessageCloud isOwn={message.userId === currentUser?.id}>
-        <S.Div display="flex" direction="column">
-          <S.Div>
-            <RoundedImage
-              width={50}
-              height={50}
-              src={getGravatar(user ? user.name : "User 800")}
-            />
+    <>
+      <S.Section
+        width="95%"
+        display="flex"
+        direction={message.userId === currentUser?.id ? "row-reverse" : "row"}
+        ml={message.userId !== currentUser?.id && 6}
+      >
+        <MessageCloud isOwn={message.userId === currentUser?.id}>
+          <S.Div display="flex" direction="column">
+            <S.Div>
+              <RoundedImage
+                width={50}
+                height={50}
+                src={getGravatar(user ? user.name : "User 800")}
+              />
+            </S.Div>
+            <S.Span>{parseDate(message.createdAt)}</S.Span>
           </S.Div>
-          <S.Span>{parseDate(message.createdAt)}</S.Span>
-        </S.Div>
-        <S.Span>{user?.name}</S.Span>
-        <S.Span>{message.text}</S.Span>
-      </MessageCloud>
-    </S.Section>
+          <CustomDiv>
+            <S.Heading.H3 font="bold">{user?.name}</S.Heading.H3>
+            <S.Span maxWidth="100%">{message.text}</S.Span>
+          </CustomDiv>
+          <S.Span
+            bgColor="danger"
+            className="material-icons"
+            onClick={() => setIsVisible(!isVisible)}
+          >
+            delete
+          </S.Span>
+        </MessageCloud>
+      </S.Section>
+    </>
   );
 }
