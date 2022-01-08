@@ -66,7 +66,7 @@ export default function GroupChatID() {
             </S.Heading.H1>
           )}
         </FixedDiv>
-        <S.Div mt={16} display="flex" direction="column">
+        <S.Div mt={20} display="flex" direction="column">
           {messages?.length > 0 &&
             messages.map((message) => (
               <MessageCard key={message.id} message={message} />
