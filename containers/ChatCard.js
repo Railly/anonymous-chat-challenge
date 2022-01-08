@@ -1,6 +1,6 @@
 import S from "components/Elements";
 import { PersistenceContext } from "context/PersistenceProvider";
-import { useContext } from "react/cjs/react.development";
+import { useContext } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useRouter } from "next/router";
 import { parseDate } from "utils/parseDate";
