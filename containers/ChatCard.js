@@ -42,18 +42,31 @@ const CustomSection = styled.section`
 export default function ChatCard({ id, type }) {
   const router = useRouter();
   const { currentUser } = useContext(UserContext);
-  const { currentGroupChatId, setCurrentGroupChatId } = useContext(ChatContext);
+  const {
+    currentGroupChatId,
+    setCurrentGroupChatId,
+    currentPrivateChatId,
+    setCurrentPrivateChatId,
+  } = useContext(ChatContext);
   const { idb } = useContext(PersistenceContext);
-  console.log(type, "type");
-  console.log(id, "id");
 
   const chat = useLiveQuery(() => {
-    const chats = type === "group" ? idb.groupChats : idb.directChats;
-    const fieldName = type === "group" ? "id" : "otherUserId";
-    return chats
-      .where(fieldName)
-      .equals(+id)
-      .first();
+    if (type === "group") {
+      return idb.groupChats
+        .where("id")
+        .equals(+id)
+        .first();
+    } else {
+      return idb.directChats
+        .where("id")
+        .equals(+id)
+        .and(
+          (chat) =>
+            chat.otherUserId === currentUser?.id ||
+            chat.currentUserId === currentUser?.id
+        )
+        .first();
+    }
   });
 
   const lastUser = useLiveQuery(() => {
@@ -65,17 +78,45 @@ export default function ChatCard({ id, type }) {
     }
   }, [chat]);
 
-  console.log(chat);
+  const otherUser = useLiveQuery(() => {
+    if (type === "private" && chat?.otherUserId) {
+      const otherUserId =
+        chat.otherUserId === currentUser?.id
+          ? chat.currentUserId
+          : chat.otherUserId;
+      return idb.users
+        .where("id")
+        .equals(+otherUserId)
+        .first();
+    }
+  }, [chat]);
 
   return (
     <CustomSection
-      isActive={currentGroupChatId === +id}
+      isActive={
+        type === "group"
+          ? currentGroupChatId === id
+          : currentPrivateChatId === otherUser?.id
+      }
       onClick={() => {
-        setCurrentGroupChatId(+id);
+        if (type === "group") {
+          setCurrentGroupChatId(+id);
+          setCurrentPrivateChatId("");
+        } else {
+          setCurrentPrivateChatId(otherUser?.id);
+          setCurrentGroupChatId("");
+        }
         if (chat?.type === "group") {
           router.push(`/group-chat/${id}`);
         } else {
-          router.push(`/private-chat/${id}/${currentUser.id}`);
+          router.push(
+            `/private-chat/${
+              chat.otherUserId === currentUser.id
+                ? chat.currentUserId
+                : chat.otherUserId
+            }/${currentUser.id}`
+          );
+          console.log(otherUser.id, "otherUser.id");
         }
       }}
     >
@@ -86,7 +127,11 @@ export default function ChatCard({ id, type }) {
               <RoundedImage
                 width={45}
                 height={45}
-                src={getGravatar(lastUser?.name)}
+                src={
+                  type === "group"
+                    ? getGravatar(lastUser?.name)
+                    : getGravatar(otherUser?.name)
+                }
               />
             </S.Div>
             <S.Div
@@ -95,7 +140,11 @@ export default function ChatCard({ id, type }) {
               justify="center"
               width="70%"
             >
-              <S.Heading.H3 font="bold">{chat.name}</S.Heading.H3>
+              {type === "group" ? (
+                <S.Heading.H3 font="bold">{chat.name}</S.Heading.H3>
+              ) : (
+                <S.Heading.H3 font="bold">{otherUser?.name}</S.Heading.H3>
+              )}
               <S.Span font="bold" my={1} text="sm">
                 {currentUser.id === lastUser?.id ? "Tú" : lastUser?.name}:
               </S.Span>

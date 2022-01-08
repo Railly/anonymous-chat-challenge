@@ -1,6 +1,6 @@
 import S from "components/Elements";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PersistenceContext } from "context/PersistenceProvider";
 import MessageCard from "containers/MessageCard";
@@ -8,6 +8,8 @@ import styled from "styled-components";
 
 const CustomSection = styled.section`
   display: flex;
+  justify-content: center;
+  width: 100%;
   flex-direction: column;
   min-height: 100vh;
   background-color: ${(p) => p.theme.colors.mediumPrimary};
@@ -15,8 +17,9 @@ const CustomSection = styled.section`
 
 const CustomDiv = styled.div`
   display: flex;
+  height: 85%;
   flex-direction: column;
-  max-height: 100vh;
+  max-height: 85vh;
   background-color: ${(p) => p.theme.colors.mediumPrimary};
   overflow-y: scroll;
 
@@ -38,45 +41,35 @@ export default function PrivateChatID() {
   const router = useRouter();
   const { otherUserId, currentUserId } = router.query;
   const { idb } = useContext(PersistenceContext);
+  const [textMessage, setTextMessage] = useState("");
 
   const chat = useLiveQuery(() => {
     if (otherUserId && currentUserId) {
-      return (
-        idb.directChats
-          .where("otherUserId")
-          .equals(+otherUserId)
-          .or("currentUserId")
-          .equals(+otherUserId)
-          // .and(
-          //   (chat) =>
-          //     chat.otherUserId === +currentUserId ||
-          //     chat.currentUserId === +currentUserId
-          // )
-          .first()
-      );
+      return idb.directChats
+        .where("otherUserId")
+        .equals(+otherUserId)
+        .or("currentUserId")
+        .equals(+otherUserId)
+        .and(
+          (chat) =>
+            (chat.currentUserId === +currentUserId &&
+              chat.otherUserId === +otherUserId) ||
+            (chat.currentUserId === +otherUserId &&
+              chat.otherUserId === +currentUserId)
+        )
+        .first();
     }
   }, [otherUserId, currentUserId]);
 
   const messages = useLiveQuery(() => {
     if (chat) {
-      console.log(otherUserId, currentUserId);
       return idb.messages
         .where("type")
         .equals("private")
-        .and(
-          (message) =>
-            (message.chatId === +otherUserId &&
-              message.userId === +currentUserId) ||
-            (message.chatId === +currentUserId &&
-              message.userId === +otherUserId)
-        )
+        .and((message) => message.chatId === chat.id)
         .toArray();
     }
   }, [chat]);
-
-  console.log(chat, "chat");
-
-  console.log(messages, "messages");
 
   return (
     <CustomSection>
@@ -93,6 +86,80 @@ export default function PrivateChatID() {
             ))}
         </S.Div>
       </CustomDiv>
+      <S.Form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          idb.transaction("rw", idb.messages, idb.directChats, async () => {
+            await idb.messages.add({
+              chatId: +chat.id,
+              text: textMessage,
+              userId: +currentUserId,
+              otherUserId: +otherUserId,
+              createdAt: new Date(),
+              type: "private",
+            });
+
+            await idb.directChats.update(+chat.id, {
+              lastMessage: textMessage,
+              lastMessageDate: new Date(),
+              lastMessageUserId: +currentUserId,
+            });
+          });
+          setTextMessage("");
+        }}
+        display="flex"
+        width="95%"
+        height="12%"
+        mt={2}
+        mx={4}
+      >
+        <CustomTextarea
+          onChange={(e) => {
+            e.preventDefault();
+            setTextMessage(e.target.value);
+          }}
+          placeholder="Escribe un mensaje..."
+        />
+        <CustomButton type="submit" mt={2}>
+          <S.Span className="material-icons">send</S.Span>
+        </CustomButton>
+      </S.Form>
     </CustomSection>
   );
 }
+
+const CustomTextarea = styled.textarea`
+  font-family: "Inter", sans-serif;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  resize: none;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: ${(p) => p.theme.colors.black};
+  background-color: ${(p) => p.theme.colors.white};
+  width: 90%;
+`;
+
+const CustomButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  padding: 0.5rem;
+  background-color: ${(p) => p.theme.colors.primary};
+  color: ${(p) => p.theme.colors.white};
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  width: 10%;
+
+  &:hover {
+    background-color: ${(p) => p.theme.darkColors.primary};
+    transition: all 0.2s ease-in-out;
+  }
+`;

@@ -41,11 +41,10 @@ export default function MessageCard({ message }) {
 
   return (
     <S.Section
-      width="90%"
+      width="95%"
       display="flex"
       direction={message.userId === currentUser?.id ? "row-reverse" : "row"}
       ml={message.userId !== currentUser?.id && 6}
-      mr={message.userId === currentUser?.id && 4}
     >
       <MessageCloud isOwn={message.userId === currentUser?.id}>
         <S.Div display="flex" direction="column">

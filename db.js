@@ -9,7 +9,7 @@ idb.version(1).stores({
   categories: "++id, name",
   groupChats:
     "++id, name, categoryId, lastMessage, lastMessageDate, lastMessageUserId, type",
-  messages: "++id, chatId, text, userId, createdAt, type",
+  messages: "++id, chatId, text, userId, createdAt, type, otherUserId",
   directChats:
     "++id, otherUserId, currentUserId, lastMessage, lastMessageDate, lastMessageUserId, type",
 });

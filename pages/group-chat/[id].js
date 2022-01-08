@@ -96,6 +96,8 @@ export default function GroupChatID() {
               lastMessageDate: new Date(),
               lastMessageUserId: +currentUser.id,
             });
+
+            setTextMessage("");
           });
         }}
         display="flex"

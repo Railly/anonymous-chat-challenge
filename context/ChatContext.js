@@ -23,6 +23,8 @@ export default function ChatContextProvider({ children }) {
       return idb.messages
         .where("userId")
         .equals(+currentUser?.id)
+        .or("otherUserId")
+        .equals(+currentUser?.id)
         .toArray();
     }
   }, [currentUser]);

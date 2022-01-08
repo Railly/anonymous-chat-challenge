@@ -58,12 +58,13 @@ export default function ChatSidebar() {
       {messages &&
         messages.length > 0 &&
         messages
+          .sort((a, b) => b.createdAt - a.createdAt)
           .reduce(reduceToUnique, [])
           .map((message) => (
             <ChatCard
-              type={message.type}
               key={message.chatId}
               id={message.chatId}
+              type={message.type}
             />
           ))}
     </CustomDiv>
