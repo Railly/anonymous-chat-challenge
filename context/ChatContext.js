@@ -14,7 +14,7 @@ export default function ChatContextProvider({ children }) {
 
   const categories = useLiveQuery(() => {
     if (currentUser) {
-      return idb.categories.toArray();
+      return idb.categories.reverse().toArray();
     }
   }, [currentUser]);
 

@@ -6,6 +6,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { PersistenceContext } from "context/PersistenceProvider";
 import { useRouter } from "next/router";
 import { UserContext } from "context/UserContext";
+import AddChat from "./AddChat";
 
 const CustomH3 = styled.h3`
   display: flex;
@@ -47,27 +48,9 @@ const CustomDiv = styled.div`
   margin-top: 0.5rem;
 `;
 
-const CustomButton = styled.button`
-  display: flex;
-  align-items: center;
-  border: 0;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-weight: bold;
-  color: ${(p) => p.theme.colors.tertiary};
-  background-color: transparent;
-
-  &:hover {
-    transition: all 0.3s ease-in-out;
-    color: ${(p) => p.theme.darkColors.tertiary};
-    background-color: ${(p) => p.theme.lightColors.tertiary};
-  }
-  margin-bottom: 0.5rem;
-`;
-
 export default function ChatCategory({ name, id }) {
   const [isDisclosureOpen, setIsDisclosureOpen] = useState(true);
+  const [insertMode, setInsertMode] = useState(false);
   const { idb } = useContext(PersistenceContext);
 
   const chats = useLiveQuery(() =>
@@ -87,14 +70,11 @@ export default function ChatCategory({ name, id }) {
       <CustomDiv isOpen={isDisclosureOpen}>
         {chats?.length > 0 &&
           chats.map((chat) => <ChatItem key={chat.id} chat={chat} />)}
-        <CustomButton width="100%" variant="secondary">
-          <S.Span text="md" className="material-icons">
-            add
-          </S.Span>
-          <S.Span ml={2} text="base">
-            Nuevo chat
-          </S.Span>
-        </CustomButton>
+        <AddChat
+          categoryId={id}
+          insertMode={insertMode}
+          setInsertMode={setInsertMode}
+        />
       </CustomDiv>
     </>
   );

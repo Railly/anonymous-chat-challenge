@@ -31,6 +31,18 @@ const Section = styled.section`
   ${(p) => getFontSize(p)}
   ${(p) => getFontWeight(p)}
 `;
+const Form = styled.form`
+  background-color: ${({ theme, bgColor = "transparent" }) =>
+    theme.colors[bgColor]};
+  color: ${({ theme, color }) => theme.colors[color]};
+  ${(p) => getFlexStyles(p)}
+  ${(p) => getMargin(p)}
+  ${(p) => getPadding(p)}
+  ${(p) => getWidthStyles(p)}
+  ${(p) => getHeightStyles(p)}
+  ${(p) => getFontSize(p)}
+  ${(p) => getFontWeight(p)}
+`;
 
 const Span = styled.span`
   background-color: ${({ theme, bgColor = "transparent" }) =>
@@ -89,6 +101,7 @@ const H3 = styled.h3`
 
 export default {
   Div,
+  Form,
   Section,
   Span,
   Heading: { H1, H2, H3 },

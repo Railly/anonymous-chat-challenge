@@ -5,6 +5,7 @@ export const UserContext = createContext();
 
 export default function UserContextProvider({ children, idb }) {
   const [currentUserId, setCurrentUserId] = useState("");
+  const [modalParams, setModalParams] = useState({});
 
   useEffect(async () => {
     const addUser = async () => {
@@ -65,6 +66,8 @@ export default function UserContextProvider({ children, idb }) {
       value={{
         currentUser: dbMyUser,
         users: dbUsers,
+        modalParams,
+        setModalParams,
       }}
     >
       {children}

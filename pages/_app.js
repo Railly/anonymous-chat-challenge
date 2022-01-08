@@ -37,6 +37,7 @@ const theme = {
     white: "#F1F8FF",
     gray: "#7F8E9C",
     transparent: "transparent",
+    danger: "#F40058",
   },
 
   darkColors: {

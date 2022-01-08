@@ -7,14 +7,18 @@ import { ChatContext } from "context/ChatContext";
 import { UserContext } from "context/UserContext";
 import ChatUser from "./ChatUser";
 import { useRouter } from "next/router";
+import AddCategory from "./AddCategory";
 
 const CustomInput = styled.input`
+  width: 75%;
   display: inline-block;
   border: none;
   border: 1px solid #ccc;
   padding: 0.5rem;
   font-size: 1rem;
-  margin: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
   &:focus {
     outline: none;
   }
@@ -75,57 +79,10 @@ const CustomSection = styled.section`
   }
 `;
 
-const CustomButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  cursor: pointer;
-  padding: 0.5rem;
-  padding-right: 1rem;
-  padding-left: 0.5rem;
-  margin-left: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 5px;
-  font-weight: bold;
-  color: ${(p) => p.theme.colors.secondary};
-  background-color: transparent;
-
-  &:hover {
-    transition: all 0.3s ease-in-out;
-    color: ${(p) => p.theme.darkColors.secondary};
-    background-color: ${(p) => p.theme.lightColors.secondary};
-  }
-`;
-
-const chats = [
-  {
-    id: 1,
-    name: "Chat 1",
-    lastMessage: "Hola",
-    lastMessageDate: "2020-05-01",
-    lastMessageTime: "12:00",
-    isRead: true,
-    isGroup: true,
-    isOnline: true,
-    avatar: "https://i.pravatar.cc/300",
-  },
-  {
-    id: 2,
-    name: "Chat 2",
-    lastMessage: "Hola",
-    lastMessageDate: "2020-05-01",
-    lastMessageTime: "12:00",
-    isRead: true,
-    isGroup: true,
-    isOnline: true,
-    avatar: "https://i.pravatar.cc/300",
-  },
-];
-
 export default function MainSidebar() {
   const router = useRouter();
   const [selected, setSelected] = useState("grupal");
+  const [insertMode, setInsertMode] = useState(false);
   const { categories } = useContext(ChatContext);
   const { users } = useContext(UserContext);
 
@@ -136,68 +93,64 @@ export default function MainSidebar() {
   }, [router.pathname]);
 
   return (
-    <CustomSection>
-      <S.Div display="flex" direction="column">
-        <S.Heading.H1
-          display="flex"
-          items="center"
-          justify="center"
-          text="lg"
-          mt={2}
-          px={4}
-          py={2}
-        >
-          <LogoIcon />
-          <S.Span ml={2}>Chat App</S.Span>
-        </S.Heading.H1>
-        <CustomInput type="search" placeholder="Busca usuarios o grupos" />
-        <Option
-          onClick={() => {
-            setSelected("grupal");
-          }}
-          isActive={selected === "grupal"}
-        >
-          <S.Span className="material-icons">groups</S.Span>
-          <S.Span ml={2}>Chats grupales</S.Span>
-        </Option>
-        <Option
-          onClick={() => setSelected("individual")}
-          isActive={selected === "individual"}
-        >
-          <S.Span text="md" className="material-icons">
-            send
-          </S.Span>
-          <S.Span ml={2}>Mensajes directos</S.Span>
-        </Option>
-      </S.Div>
-      {selected === "grupal" && (
-        <CustomButton
-          width="100%"
-          onClick={() => setSelected("individual")}
-          variant="secondary"
-        >
-          <S.Span text="md" className="material-icons">
-            add
-          </S.Span>
-          <S.Span ml={2} text="base">
-            Nueva Categoría
-          </S.Span>
-        </CustomButton>
-      )}
-      <CustomDiv>
-        {selected === "grupal" &&
-          categories &&
-          categories.map((category) => (
-            <ChatCategory
-              key={category.id}
-              name={category.name}
-              id={category.id}
-            />
-          ))}
-        {selected === "individual" &&
-          users &&
-          users.map((user) => <ChatUser key={user.id} user={user} />)}
-      </CustomDiv>
-    </CustomSection>
+    <>
+      <CustomSection>
+        <S.Div display="flex" direction="column">
+          <S.Heading.H1
+            display="flex"
+            items="center"
+            justify="center"
+            text="lg"
+            mt={2}
+            px={4}
+            py={2}
+          >
+            <LogoIcon />
+            <S.Span ml={2}>Chat App</S.Span>
+          </S.Heading.H1>
+          <CustomInput type="search" placeholder="Busca usuarios o grupos" />
+          <Option
+            onClick={() => {
+              setSelected("grupal");
+            }}
+            isActive={selected === "grupal"}
+          >
+            <S.Span className="material-icons">groups</S.Span>
+            <S.Span ml={2}>Chats grupales</S.Span>
+          </Option>
+          <Option
+            onClick={() => setSelected("individual")}
+            isActive={selected === "individual"}
+          >
+            <S.Span text="md" className="material-icons">
+              send
+            </S.Span>
+            <S.Span ml={2}>Mensajes directos</S.Span>
+          </Option>
+        </S.Div>
+        {selected === "grupal" && (
+          <AddCategory insertMode={insertMode} setInsertMode={setInsertMode} />
+        )}
+        <CustomDiv>
+          {selected === "grupal" &&
+            categories &&
+            categories.map((category) => (
+              <ChatCategory
+                key={category.id}
+                name={category.name}
+                id={category.id}
+              />
+            ))}
+          {selected === "individual" &&
+            users &&
+            users.map((user) => <ChatUser key={user.id} user={user} />)}
+        </CustomDiv>
+      </CustomSection>
+      {/* <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        type="new-category"
+      /> */}
+    </>
   );
 }
