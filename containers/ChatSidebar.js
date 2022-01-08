@@ -13,13 +13,34 @@ const RoundedImage = styled(Image)`
   border-radius: 50%;
 `;
 
+const CustomDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  background-color: ${(p) => p.theme.colors.white};
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${(p) => p.theme.colors.lightPrimary};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${(p) => p.theme.colors.primary};
+    border-radius: 5px;
+  }
+`;
+
 export default function ChatSidebar() {
   const router = useRouter();
   const { currentUser } = useContext(UserContext);
   const { messages } = useContext(ChatContext);
 
   return (
-    <S.Section minHeight="100vh" bgColor="white">
+    <CustomDiv>
       <S.Div display="flex" items="center" ml={4} mt={2}>
         {currentUser && (
           <>
@@ -45,6 +66,6 @@ export default function ChatSidebar() {
               id={message.chatId}
             />
           ))}
-    </S.Section>
+    </CustomDiv>
   );
 }

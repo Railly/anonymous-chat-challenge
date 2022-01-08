@@ -41,6 +41,7 @@ const theme = {
   },
 
   darkColors: {
+    primary: "#186CB9",
     secondary: "#32B757",
     tertiary: "#6D20D9",
   },
