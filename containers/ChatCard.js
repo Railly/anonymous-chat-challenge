@@ -104,7 +104,6 @@ export default function ChatCard({ id, type }) {
             : chat.otherUserId
         }/${currentUser.id}`
       );
-      console.log(otherUser.id, "otherUser.id");
     }
   };
 

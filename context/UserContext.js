@@ -14,7 +14,6 @@ export default function UserContextProvider({ children, idb }) {
       });
       setCurrentUserId(userId);
 
-      console.log("userId", userId);
       const users = await idb.users.toArray();
       const directChats = await idb.directChats.toArray();
 
