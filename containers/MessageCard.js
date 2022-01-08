@@ -35,8 +35,18 @@ const CustomDiv = styled.div`
   max-width: 80%;
 `;
 
+const DeleteIcon = styled.span`
+  color: ${(p) => p.theme.colors[p.color]};
+  background-color: ${(p) => p.theme.colors[p.bgColor]};
+  border-radius: 10px;
+  padding: 0.3rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+`;
+
 export default function MessageCard({ message }) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const { idb } = useContext(PersistenceContext);
   const { currentUser } = useContext(UserContext);
 
@@ -51,7 +61,7 @@ export default function MessageCard({ message }) {
     <>
       <S.Section
         width="95%"
-        display="flex"
+        display={isVisible ? "flex" : "none"}
         direction={message.userId === currentUser?.id ? "row-reverse" : "row"}
         ml={message.userId !== currentUser?.id && 6}
       >
@@ -70,13 +80,16 @@ export default function MessageCard({ message }) {
             <S.Heading.H3 font="bold">{user?.name}</S.Heading.H3>
             <S.Span maxWidth="100%">{message.text}</S.Span>
           </CustomDiv>
-          <S.Span
-            bgColor="danger"
-            className="material-icons"
-            onClick={() => setIsVisible(!isVisible)}
-          >
-            delete
-          </S.Span>
+          <S.Div>
+            <DeleteIcon
+              color={message.userId === currentUser?.id ? "danger" : "white"}
+              bgColor={message.userId === currentUser?.id ? "white" : "danger"}
+              className="material-icons"
+              onClick={() => setIsVisible(false)}
+            >
+              delete
+            </DeleteIcon>
+          </S.Div>
         </MessageCloud>
       </S.Section>
     </>

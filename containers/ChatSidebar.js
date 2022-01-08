@@ -4,14 +4,10 @@ import { UserContext } from "context/UserContext";
 import { ChatContext } from "context/ChatContext";
 import { useContext } from "react";
 import Image from "next/image";
-import { getGravatar } from "utils/getGravatar";
 import { reduceToUnique } from "utils/reduceToUnique";
 import { useRouter } from "next/router";
 import ChatCard from "./ChatCard";
-
-const RoundedImage = styled(Image)`
-  border-radius: 50%;
-`;
+import UserProfile from "./UserProfile";
 
 const CustomDiv = styled.div`
   display: flex;
@@ -42,18 +38,7 @@ export default function ChatSidebar() {
   return (
     <CustomDiv>
       <S.Div display="flex" items="center" ml={4} mt={2}>
-        {currentUser && (
-          <>
-            <S.Div mr={4}>
-              <RoundedImage
-                width={50}
-                height={50}
-                src={getGravatar(currentUser?.name)}
-              />
-            </S.Div>
-            <S.Heading.H1 text="md">{currentUser?.name}</S.Heading.H1>
-          </>
-        )}
+        {currentUser && <UserProfile currentUser={currentUser} />}
       </S.Div>
       {messages &&
         messages.length > 0 &&
