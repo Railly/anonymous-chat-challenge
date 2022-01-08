@@ -33,14 +33,18 @@ const RoundedImage = styled(Image)`
 
 export default function ChatUser({ user: otherUser }) {
   const router = useRouter();
-  const { currentPrivateChatId, setCurrentPrivateChatId } =
-    useContext(ChatContext);
+  const {
+    setCurrentGroupChatId,
+    currentPrivateChatId,
+    setCurrentPrivateChatId,
+  } = useContext(ChatContext);
   const { currentUser } = useContext(UserContext);
 
   return (
     <CustomSpan
       onClick={() => {
         setCurrentPrivateChatId(otherUser.id);
+        setCurrentGroupChatId("");
         router.push(`/private-chat/${otherUser.id}/${currentUser.id}`);
       }}
       isActive={currentPrivateChatId === +otherUser.id}

@@ -18,6 +18,12 @@ export default function ChatContextProvider({ children }) {
     }
   }, [currentUser]);
 
+  const groupChats = useLiveQuery(() => {
+    if (currentUser) {
+      return idb.groupChats.reverse().toArray();
+    }
+  }, [currentUser]);
+
   const messages = useLiveQuery(() => {
     if (currentUser) {
       return idb.messages
@@ -34,6 +40,7 @@ export default function ChatContextProvider({ children }) {
       value={{
         categories,
         messages,
+        groupChats,
         currentGroupChatId,
         currentPrivateChatId,
         setCurrentGroupChatId,

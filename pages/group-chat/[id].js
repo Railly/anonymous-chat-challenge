@@ -111,9 +111,10 @@ export default function GroupChatID() {
             e.preventDefault();
             setTextMessage(e.target.value);
           }}
+          value={textMessage}
           placeholder="Escribe un mensaje..."
         />
-        <CustomButton type="submit" mt={2}>
+        <CustomButton disabled={textMessage === ""} type="submit" mt={2}>
           <S.Span className="material-icons">send</S.Span>
         </CustomButton>
       </S.Form>
@@ -154,5 +155,12 @@ const CustomButton = styled.button`
   &:hover {
     background-color: ${(p) => p.theme.darkColors.primary};
     transition: all 0.2s ease-in-out;
+  }
+
+  &:disabled {
+    transition: all 0.2s ease-in-out;
+    background-color: ${(p) => p.theme.colors.lightPrimary};
+    color: ${(p) => p.theme.colors.mediumPrimary};
+    cursor: not-allowed;
   }
 `;

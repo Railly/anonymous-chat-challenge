@@ -4,8 +4,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 export const UserContext = createContext();
 
 export default function UserContextProvider({ children, idb }) {
+  const [selected, setSelected] = useState("grupal");
   const [currentUserId, setCurrentUserId] = useState("");
-  const [modalParams, setModalParams] = useState({});
 
   useEffect(async () => {
     const addUser = async () => {
@@ -62,8 +62,8 @@ export default function UserContextProvider({ children, idb }) {
       value={{
         currentUser: dbMyUser,
         users: dbUsers,
-        modalParams,
-        setModalParams,
+        selected,
+        setSelected,
       }}
     >
       {children}

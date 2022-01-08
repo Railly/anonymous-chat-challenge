@@ -1,13 +1,14 @@
 import LogoIcon from "components/LogoIcon";
-import ChatCategory from "containers/ChatCategory";
+import ChatCategory, { ChatGroup } from "containers/ChatCategory";
 import styled from "styled-components";
 import S from "components/Elements";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ChatContext } from "context/ChatContext";
 import { UserContext } from "context/UserContext";
 import ChatUser from "./ChatUser";
 import { useRouter } from "next/router";
 import AddCategory from "./AddCategory";
+import FilteredData from "./FilteredData";
 
 const CustomInput = styled.input`
   width: 75%;
@@ -79,18 +80,30 @@ const CustomSection = styled.section`
   }
 `;
 
-export default function MainSidebar() {
-  const router = useRouter();
-  const [selected, setSelected] = useState("grupal");
-  const [insertMode, setInsertMode] = useState(false);
-  const { categories } = useContext(ChatContext);
-  const { users } = useContext(UserContext);
+const FilterButton = styled.button`
+  display: flex;
+  width: 25%;
+  margin: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  color: ${(p) => p.theme.colors.white};
+  background-color: ${(p) => p.theme.colors.tertiary};
 
-  useEffect(() => {
-    if (router.pathname.includes("private-chat")) {
-      setSelected("individual");
-    }
-  }, [router.pathname]);
+  &:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: ${(p) => p.theme.darkColors.tertiary};
+  }
+`;
+
+export default function MainSidebar() {
+  const [insertMode, setInsertMode] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const { categories, groupChats } = useContext(ChatContext);
+  const { users, selected, setSelected } = useContext(UserContext);
 
   return (
     <>
@@ -108,7 +121,27 @@ export default function MainSidebar() {
             <LogoIcon />
             <S.Span ml={2}>Chat App</S.Span>
           </S.Heading.H1>
-          <CustomInput type="search" placeholder="Busca usuarios o grupos" />
+          <S.Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSelected("filter");
+            }}
+            display="flex"
+          >
+            <CustomInput
+              type="text"
+              placeholder="Nombre del chat"
+              name="name"
+              onChange={async (e) => {
+                setSearchText(e.target.value);
+              }}
+            />
+            <FilterButton type="submit">
+              <S.Span text="md" className="material-icons">
+                add
+              </S.Span>
+            </FilterButton>
+          </S.Form>
           <Option
             onClick={() => {
               setSelected("grupal");
@@ -141,16 +174,20 @@ export default function MainSidebar() {
                 id={category.id}
               />
             ))}
+
           {selected === "individual" &&
             users &&
             users.map((user) => <ChatUser key={user.id} user={user} />)}
+
+          {selected === "filter" && (
+            <FilteredData
+              searchText={searchText}
+              users={users}
+              groupChats={groupChats}
+            />
+          )}
         </CustomDiv>
       </CustomSection>
-      {/* <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        type="new-category"
-      /> */}
     </>
   );
 }

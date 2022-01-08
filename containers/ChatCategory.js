@@ -69,7 +69,7 @@ export default function ChatCategory({ name, id }) {
       </CustomH3>
       <CustomDiv isOpen={isDisclosureOpen}>
         {chats?.length > 0 &&
-          chats.map((chat) => <ChatItem key={chat.id} chat={chat} />)}
+          chats.map((chat) => <ChatGroup key={chat.id} chat={chat} />)}
         <AddChat
           categoryId={id}
           insertMode={insertMode}
@@ -80,15 +80,17 @@ export default function ChatCategory({ name, id }) {
   );
 }
 
-const ChatItem = ({ chat }) => {
+export const ChatGroup = ({ chat }) => {
   const router = useRouter();
-  const { currentGroupChatId, setCurrentGroupChatId } = useContext(ChatContext);
+  const { setCurrentPrivateChatId, currentGroupChatId, setCurrentGroupChatId } =
+    useContext(ChatContext);
   const { currentUser } = useContext(UserContext);
 
   return (
     <CustomSpan
       onClick={() => {
         setCurrentGroupChatId(chat.id);
+        setCurrentPrivateChatId("");
         if (chat.type === "group") {
           router.push(`/group-chat/${chat.id}`);
         } else {
